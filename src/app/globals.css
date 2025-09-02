@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-teal: #0fb9c6;
+  --color-brand-dark: #102a43;
+  --color-brand-light: #f5f7fa;
+  --color-brand-gray: #627d98;
+  --color-brand-accent: #ffd166;
+  --color-brand-blue: #0099ff;
+  --shadow-card: 0 15px 40px rgba(16, 42, 67, 0.08);
+  --radius: 16px;
+}
+
+html,
+body {
+  @apply bg-brand-light text-brand-dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+}
+
+.section {
+  @apply py-20;
+}
+
+.section-title {
+  @apply text-3xl md:text-4xl font-semibold text-center;
+}
+
+.section-subtitle {
+  @apply mt-4 max-w-3xl mx-auto text-center text-brand-gray;
+}

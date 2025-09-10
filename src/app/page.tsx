@@ -9,13 +9,13 @@ import News from "@/components/sections/News";
 export default function HomePage() {
   return (
     <>
-      <NavBar />
+      
       <Hero />
       <WhyChoose />
       <About />      
       <News />
       <Cta />
-      <Footer />
+     
     </>
   );
 }

@@ -5,8 +5,8 @@ export default function Hero() {
       className="
         relative isolate bg-brand-teal text-white w-full
         flex items-center
-        scroll-mt-24               /* lands below sticky navbar */
-        min-h-[320px] sm:min-h-[420px] /* prevents 'too short' on tiny screens */
+        scroll-mt-24            
+        min-h-[320px] sm:min-h-[420px]
         aspect-[16/6] md:aspect-[16/8] lg:aspect-[16/6]
       "
     >

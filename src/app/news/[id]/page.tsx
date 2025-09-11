@@ -5,7 +5,6 @@ type RouteParams = { id: string };
 export default async function NewsDetailPage({
   params,
 }: { params: RouteParams }) {
-  const { id } = params;
 
 
   const res = await fetch(

@@ -4,8 +4,8 @@ type RouteParams = { id: string };
 
 export default async function NewsDetailPage({
   params,
-}: { params: RouteParams }) {
-
+}: { params: Promise<RouteParams> }) {
+  const { id } = await params;
 
   const res = await fetch(
     `https://api.wediscount.org/api/v1/ContentView?contentId=${encodeURIComponent(id)}`,

@@ -1,31 +1,32 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-const LINKS = [
-  { href: "#home", label: "Home" },
-  { href: "#services", label: "Services" },
-  { href: "#features", label: "Features" },
-  { href: "#about-us", label: "About Us" }, 
-  { href: "#showcase", label: "Showcase" },
-  { href: "#blog", label: "Blog" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#contact", label: "Contact" },
+type Item = { id: string; label: string };
+
+const LINKS: Item[] = [
+  { id: "home", label: "Home" },
+  { id: "services", label: "Services" },
+  { id: "features", label: "Features" },
+  { id: "about-us", label: "About Us" },
+  { id: "showcase", label: "Showcase" },
+  { id: "blog", label: "Blog" },
+  { id: "pricing", label: "Pricing" },
+  { id: "contact", label: "Contact" },
 ];
 
-const ABOUT_ITEMS = [
-  { href: "#about-us", label: "About Us" },
-  { href: "#about-vision", label: "Vision" },
-  { href: "#about-mission", label: "Mission" },
-  { href: "#about-values", label: "Values" },
+const ABOUT_ITEMS: Item[] = [
+  { id: "about-us", label: "About Us" },
+  { id: "about-vision", label: "Vision" },
+  { id: "about-mission", label: "Mission" },
+  { id: "about-values", label: "Values" },
 ];
 
 export default function NavBar() {
-  const [open, setOpen] = useState(false);           
-  const [aboutOpen, setAboutOpen] = useState(false); 
-  const [aboutOpenMobile, setAboutOpenMobile] = useState(false); 
+  const [open, setOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [aboutOpenMobile, setAboutOpenMobile] = useState(false);
   const [activeHash, setActiveHash] = useState("#home");
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const update = () => setActiveHash(window.location.hash || "#home");
@@ -34,92 +35,63 @@ export default function NavBar() {
     return () => window.removeEventListener("hashchange", update);
   }, []);
 
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setAboutOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-
-  useEffect(() => {
-    if (!open) setAboutOpenMobile(false);
-  }, [open]);
+  const toHomeHash = (id: string) => ({ pathname: "/", hash: id });
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-zinc-200 shadow-sm pt-2 pb-2">
       <div className="h-[70px]">
         <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-3">
-
-          <Link
-            href="/"
-            className="text-[24px] md:text-[26px] font-bold tracking-tight text-brand-dark select-none"
-          >
+          <Link href="/" className="text-[24px] md:text-[26px] font-bold tracking-tight text-brand-dark">
             Simpl<span className="text-brand-teal">é</span>
           </Link>
 
-        
           <nav className="hidden md:flex items-center gap-8">
             {LINKS.map((link) =>
               link.label === "About Us" ? (
-                <div key={link.href} className="relative" ref={dropdownRef}>
+                <div key={link.id} className="relative">
                   <button
                     type="button"
                     aria-haspopup="menu"
                     aria-expanded={aboutOpen}
-                    aria-controls="about-menu-desktop"
                     onClick={() => setAboutOpen((v) => !v)}
-                    className={`transition-colors focus:outline-none focus:ring-2 focus:ring-brand-teal rounded-sm ${
-                      activeHash === link.href
-                        ? "text-brand-blue"
-                        : "text-gray-800 hover:text-brand-blue"
+                    className={`transition-colors ${
+                      activeHash === `#${link.id}` ? "text-brand-blue" : "text-gray-800 hover:text-brand-blue"
                     }`}
                   >
                     About ▾
                   </button>
 
                   {aboutOpen && (
-                    <div
-                      id="about-menu-desktop"
-                      role="menu"
-                      className="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-lg border border-gray-200 z-20 p-1"
-                    >
+                    <div className="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-lg border border-gray-200 z-20 p-1">
                       {ABOUT_ITEMS.map((item) => (
-                        <a
-                          key={item.href}
-                          href={item.href}
-                          role="menuitem"
-                          className="block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                        <Link
+                          key={item.id}
+                          href={toHomeHash(item.id)}
+                          className="block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => setAboutOpen(false)}
                         >
                           {item.label}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   )}
                 </div>
               ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={`transition-colors focus:outline-none focus:ring-2 focus:ring-brand-teal rounded-sm ${
-                    activeHash === link.href
-                      ? "text-brand-blue"
-                      : "text-gray-800 hover:text-brand-blue"
+                <Link
+                  key={link.id}
+                  href={toHomeHash(link.id)}
+                  className={`transition-colors ${
+                    activeHash === `#${link.id}` ? "text-brand-blue" : "text-gray-800 hover:text-brand-blue"
                   }`}
                 >
                   {link.label}
-                </a>
+                </Link>
               )
             )}
           </nav>
 
           <button
-            className="md:hidden inline-flex items-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal rounded-sm"
+            className="md:hidden inline-flex items-center gap-2 text-sm"
             aria-label="Open menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -132,58 +104,50 @@ export default function NavBar() {
         </div>
       </div>
 
-   
       {open && (
         <div className="md:hidden border-t border-zinc-200 bg-white">
           <nav className="mx-auto max-w-[1100px] px-4 py-3" aria-label="Mobile navigation">
             <ul className="grid gap-2 text-[14px] font-medium">
               {LINKS.map((link) =>
                 link.label === "About Us" ? (
-                  <li key={link.href} className="relative">
-                 
+                  <li key={link.id} className="relative">
                     <button
                       type="button"
                       aria-haspopup="menu"
                       aria-expanded={aboutOpenMobile}
-                      aria-controls="about-menu-mobile"
                       onClick={() => setAboutOpenMobile((v) => !v)}
-                      className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                      className="w-full text-left px-3 py-2 rounded hover:bg-gray-100"
                     >
                       About ▾
                     </button>
 
                     {aboutOpenMobile && (
-                      <div
-                        id="about-menu-mobile"
-                        role="menu"
-                        className="absolute left-3 right-3 mt-2 rounded-md bg-white shadow-lg border border-gray-200 z-20 p-1"
-                      >
+                      <div className="mt-2 rounded-md bg-white shadow-lg border border-gray-200 z-20 p-1">
                         {ABOUT_ITEMS.map((item) => (
-                          <a
-                            key={item.href}
-                            href={item.href}
-                            role="menuitem"
-                            className="block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                          <Link
+                            key={item.id}
+                            href={toHomeHash(item.id)}
+                            className="block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             onClick={() => {
                               setAboutOpenMobile(false);
                               setOpen(false);
                             }}
                           >
                             {item.label}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     )}
                   </li>
                 ) : (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      className="block px-3 py-2 rounded hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                  <li key={link.id}>
+                    <Link
+                      href={toHomeHash(link.id)}
+                      className="block px-3 py-2 rounded hover:bg-gray-100"
                       onClick={() => setOpen(false)}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 )
               )}

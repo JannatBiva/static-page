@@ -1,4 +1,6 @@
 import NewsCard from "@/components/NewsCard";
+import { apiGet } from "@/lib/api";
+import { contentImageUrl } from "@/lib/server/image";
 
 type ApiItem = {
   contentID: number;
@@ -7,39 +9,18 @@ type ApiItem = {
   discountedPrice: number;
   isDiscountedContent: boolean;
   discountPercentage: number;
-  slug: string;
+  slug?: string;
   channelName: string;
 };
 
 export default async function News() {
-  let items: ApiItem[] = [];
-
-  try {
-    const res = await fetch(
-      "https://api.wediscount.org/api/v1/GetMostRecentContentsAsync",
-      { cache: "no-store", headers: { accept: "application/json" } }
-    );
-
-    if (res.ok) {
-      const raw = await res.json();
-      const arr = Array.isArray(raw) ? raw : raw?.data;
-
-      items = (Array.isArray(arr) ? arr : []).filter(
-        (x: any): x is ApiItem =>
-          typeof x?.contentID === "number" &&
-          typeof x?.contentTitle === "string"
-      );
-    }
-  } catch {}
-
-  const colors = ["green", "yellow", "blue"] as const;
+  const raw = await apiGet<any>("/GetMostRecentContentsAsync");
+  const items: ApiItem[] = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
 
   return (
     <section id="showcase" className="mt-2 mb-6 bg-dark-grey py-16">
       <div className="max-w-[1200px] mx-auto px-4">
-        <h2 className="mt-8 text-4xl font-light text-[#444] text-center">
-          News & Announcements
-        </h2>
+        <h2 className="mt-8 text-4xl font-light text-[#444] text-center">News & Announcements</h2>
         <div className="relative mx-auto mt-6 h-[1px] w-24 bg-brand-teal">
           <span className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand-teal bg-white" />
         </div>
@@ -64,14 +45,13 @@ export default async function News() {
                 title={item.contentTitle}
                 excerpt={priceLine}
                 storeName={item.channelName}
+                imageUrl={contentImageUrl(item.contentID)}
                 comments={0}
               />
             );
           })
         ) : (
-          <p className="text-center text-gray-500 col-span-3">
-            No news available right now.
-          </p>
+          <p className="text-center text-gray-500 col-span-3">No news available right now.</p>
         )}
       </div>
     </section>

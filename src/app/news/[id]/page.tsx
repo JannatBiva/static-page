@@ -1,19 +1,15 @@
 import NewsDetailClient from "@/components/NewsDetailClient";
+import { apiGet } from "@/lib/api";
+import { contentImageUrl } from "@/lib/server/image";
 
 type RouteParams = { id: string };
 
 export default async function NewsDetailPage({
   params,
-}: { params: RouteParams }) {
-  const { id } = params;
+}: { params: Promise<RouteParams> }) {
+  const { id } = await params;
 
-
-  const res = await fetch(
-    `https://api.wediscount.org/api/v1/ContentView?contentId=${encodeURIComponent(id)}`,
-    { cache: "no-store", headers: { accept: "application/json" } }
-  );
-  if (!res.ok) throw new Error("Failed to fetch content details");
-  const raw = await res.json();
+  const raw = await apiGet<any>(`/ContentView?contentId=${encodeURIComponent(id)}`);
 
   const content = {
     contentID: raw.contentID ?? raw.contentId ?? Number(id),
@@ -22,8 +18,8 @@ export default async function NewsDetailPage({
     discountedPrice: raw.discountedPrice ?? 0,
     discountPercentage: raw.discountPercentage ?? 0,
     shortDescription: raw.shortDescription ?? raw.contentDescription ?? "",
-    imageUrl: undefined,
-    imageUrls: [],
+    imageUrl: contentImageUrl(Number(id)),  
+    imageUrls: [contentImageUrl(Number(id))],
   };
 
   return <NewsDetailClient content={content} />;

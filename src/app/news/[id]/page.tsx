@@ -6,8 +6,8 @@ type RouteParams = { id: string };
 
 export default async function NewsDetailPage({
   params,
-}: { params: Promise<RouteParams> }) {
-  const { id } = await params;
+}: { params: RouteParams }) {
+  const { id } = params;
 
   const raw = await apiGet<any>(`/ContentView?contentId=${encodeURIComponent(id)}`);
 
@@ -18,7 +18,7 @@ export default async function NewsDetailPage({
     discountedPrice: raw.discountedPrice ?? 0,
     discountPercentage: raw.discountPercentage ?? 0,
     shortDescription: raw.shortDescription ?? raw.contentDescription ?? "",
-    imageUrl: contentImageUrl(Number(id)),  
+    imageUrl: contentImageUrl(Number(id)),
     imageUrls: [contentImageUrl(Number(id))],
   };
 

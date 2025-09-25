@@ -1,8 +1,7 @@
 import "server-only";
 
-const API_BASE =
-  process.env.API_BASE ??
-  process.env.NEXT_PUBLIC_API_BASE;
+const RAW_BASE = process.env.API_BASE ?? process.env.NEXT_PUBLIC_API_BASE;
+const API_BASE = RAW_BASE ? RAW_BASE.replace(/\/+$/, "") : "";
 
 if (!API_BASE) {
   throw new Error("API_BASE (or NEXT_PUBLIC_API_BASE) is not defined in environment variables");

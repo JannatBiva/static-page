@@ -7,7 +7,7 @@ type RouteParams = { id: string };
 export default async function NewsDetailPage({
   params,
 }: { params: RouteParams }) {
-  const { id } = params;
+  const { id } = await params;
 
   const raw = await apiGet<any>(`/ContentView?contentId=${encodeURIComponent(id)}`);
 

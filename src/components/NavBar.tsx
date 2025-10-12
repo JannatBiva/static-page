@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useAppSelector } from "@/lib/hooks";
+import { FiShoppingCart } from "react-icons/fi";
 
 type Item = { id: string; label: string };
 
@@ -27,6 +29,7 @@ export default function NavBar() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [aboutOpenMobile, setAboutOpenMobile] = useState(false);
   const [activeHash, setActiveHash] = useState("#home");
+  const totalQty = useAppSelector(s => s.cart.totalQty);
 
   useEffect(() => {
     const update = () => setActiveHash(window.location.hash || "#home");
@@ -54,9 +57,8 @@ export default function NavBar() {
                     aria-haspopup="menu"
                     aria-expanded={aboutOpen}
                     onClick={() => setAboutOpen((v) => !v)}
-                    className={`transition-colors ${
-                      activeHash === `#${link.id}` ? "text-brand-blue" : "text-gray-800 hover:text-brand-blue"
-                    }`}
+                    className={`transition-colors ${activeHash === `#${link.id}` ? "text-brand-blue" : "text-gray-800 hover:text-brand-blue"
+                      }`}
                   >
                     About ▾
                   </button>
@@ -80,14 +82,25 @@ export default function NavBar() {
                 <Link
                   key={link.id}
                   href={toHomeHash(link.id)}
-                  className={`transition-colors ${
-                    activeHash === `#${link.id}` ? "text-brand-blue" : "text-gray-800 hover:text-brand-blue"
-                  }`}
+                  className={`transition-colors ${activeHash === `#${link.id}` ? "text-brand-blue" : "text-gray-800 hover:text-brand-blue"
+                    }`}
                 >
                   {link.label}
                 </Link>
               )
             )}
+
+            <Link href="/cart" className="relative inline-flex items-center" aria-label="Cart">
+              <FiShoppingCart className="text-[22px] text-gray-700 hover:text-brand-blue transition-colors" />
+              {totalQty > 0 && (
+                <span
+                  className="absolute -top-2 -right-2 min-w-5 h-5 rounded-full bg-red-500 text-white text-[11px] leading-5 text-center px-1"
+                  aria-label={`${totalQty} items in cart`}
+                >
+                  {totalQty}
+                </span>
+              )}
+            </Link>
           </nav>
 
           <button
@@ -151,6 +164,13 @@ export default function NavBar() {
                   </li>
                 )
               )}
+
+              <li>
+                <Link href="/cart" className="flex items-center justify-between px-3 py-2 rounded hover:bg-gray-100" onClick={() => setOpen(false)}>
+                  <span>Cart</span>
+                  {totalQty > 0 && <span className="ml-2 inline-flex items-center justify-center min-w-5 h-5 rounded-full bg-red-500 text-white text-[11px] px-1">{totalQty}</span>}
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

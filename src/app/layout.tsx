@@ -3,6 +3,7 @@ import "./globals.css";
 import { Lato } from "next/font/google";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import Providers from "./Providers";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -14,17 +15,15 @@ export const metadata: Metadata = {
   description: "Single-page site built with Next.js, TypeScript, and Tailwind CSS",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${lato.className} overflow-x-hidden antialiased`}>
-        <NavBar />
-        {children}
-        <Footer />
+        <Providers>
+          <NavBar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

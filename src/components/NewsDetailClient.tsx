@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { FiShare2 } from "react-icons/fi";
 import { BsGift } from "react-icons/bs";
+import { useAppDispatch } from "@/lib/hooks";
+import { addToCart } from "@/lib/features/cart/cartSlice";
 
 interface ContentDetail {
   contentID: number;
@@ -22,6 +24,7 @@ interface ContentDetail {
 
 export default function NewsDetailClient({ content }: { content: ContentDetail }) {
   const BRAND = "#13BC2E";
+  const dispatch = useAppDispatch();
 
   const gallery = useMemo(
     () => (content.imageUrls?.length ? content.imageUrls : [content.imageUrl ?? "/placeholder.png"]),
@@ -56,6 +59,24 @@ export default function NewsDetailClient({ content }: { content: ContentDetail }
   const isReasonableNewItem = content.discountPercentage >= 10;
   const showPrice = content.discountedPrice > 0 ? content.discountedPrice : content.originalPrice;
   const fy = Math.round((showPrice || 0) * 0.1 * 10) / 10;
+
+  const productForCart = {
+    id: content.contentID,
+    title: content.contentTitle,
+    price: showPrice,                      
+    imageUrl: selectedImg,               
+    compareAtPrice: content.originalPrice,  
+    discountPct: content.discountPercentage,
+    vendor: content.storeName ?? "Wetopian Partnership",
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(productForCart));
+  };
+
+  const handleBuyNow = () => {
+    dispatch(addToCart(productForCart));
+  };
 
   return (
     <div className="w-full px-3 sm:px-6 md:px-8 py-8 grid gap-1 md:gap-2 md:grid-cols-[78px_minmax(0,500px)_1fr]">
@@ -200,12 +221,14 @@ export default function NewsDetailClient({ content }: { content: ContentDetail }
             type="button"
             className="px-20 h-10 rounded-md text-white font-medium"
             style={{ backgroundColor: BRAND }}
+            onClick={handleBuyNow}             
           >
             Buy now
           </button>
           <button
             type="button"
             className="px-20 h-10 rounded-md border font-medium hover:bg-gray-200"
+            onClick={handleAddToCart}        
           >
             Add to cart
           </button>

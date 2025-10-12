@@ -12,7 +12,8 @@ export default {
           dark: "#102a43",
           light: "#f5f7fa",
           gray: "#627d98",
-          accent: "#ffd166"
+          accent: "#ffd166",
+          green: "#13BC2E", 
         },
       },
       boxShadow: {
